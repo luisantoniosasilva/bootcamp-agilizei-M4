@@ -1,0 +1,30 @@
+name: Run tests
+
+on: 
+  push:
+    branches: [main] #Branch que irá disparar o CI
+   
+jobs:
+  cypress-run:
+    runs-on: ubuntu-16.04 # Máquina que será executada o código
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1 # Verifica o repositório e baixa o código
+      - name: Install Dep;
+        uses: cypress-io/github-action@v2 # Já executa o teste não tendo que passar pra subir o cypress
+        with:
+          start: npm install
+          
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v2.2.2
+        if: failure()
+        with:
+          name: screenshots
+          path: web/cypress/screenshots
+          
+      - name: Upload videos
+        uses: actions/upload-artifact@v2.2.2
+        if: always()
+        with:
+          name: videos
+          path: web/cypress/videos
